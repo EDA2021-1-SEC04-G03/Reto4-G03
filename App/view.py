@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+import model
 from DISClib.ADT import list as lt
 assert cf
 
@@ -37,7 +38,14 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Identificar los clústeres de comunicación")
+    print("3- Identificar los puntos de conexión críticos de la red")
+    print("4- La ruta de menor distancia")
+    print("5- Identificar la Infraestructura Crítica de la Red")
+    print("6- Análisis de fallas")
+    print("7- Los mejores canales para transmitir")
+    print("8- La mejor ruta para comunicarme")
+    print("9- Graficando los Grafos")
 
 catalog = None
 
@@ -49,6 +57,18 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+
+        cont = controller.init()
+        print("Numero de landing points cargados:",controller.landingPointsSize(cont))
+        print("Numero de paises cargados:",controller.countriesSize(cont))
+        print('Numero de vertices:',controller.totalStops(cont))
+        print('Numero de arcos:',controller.totalConnections(cont))
+
+        """numedges = controller.totalConnections(cont)
+        numvertex = controller.totalStops(cont)
+        print('Numero de vertices: ' + str(numvertex))
+        print('Numero de arcos: ' + str(numedges))
+        print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))"""
 
     elif int(inputs[0]) == 2:
         pass
