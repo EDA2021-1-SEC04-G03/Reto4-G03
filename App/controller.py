@@ -90,9 +90,14 @@ def loadServices(analyzer, servicesfile):
 
 # Funciones de consulta sobre el catálogo
 
-def landingPointsSize(catalog):
+def getFirstLandingPoint(analyzer):
+    return model.getFirstLandingPoint(analyzer)
 
-    return model.landingPointsSize(catalog)
+def getLastCountryInfo(analyzer):
+    return model.getLastCountryInfo(analyzer)
+
+def landingPointsSize(analyzer):
+    return model.landingPointsSize(analyzer)
 
 def countriesSize(catalog):
 

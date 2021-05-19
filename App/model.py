@@ -69,13 +69,9 @@ def newAnalyzer():
                                               size=14000,
                                               comparefunction=compareStopIds)
 
-        analyzer['landingPointsGeo'] = m.newMap(1300,
-                                   maptype='PROBING',
-                                   comparefunction=None)
+        analyzer['landingPointsGeo'] = lt.newList('ARRAY_LIST')
         
-        analyzer['countries'] = m.newMap(250,
-                                   maptype='PROBING',
-                                   comparefunction=None)
+        analyzer['countries'] = lt.newList('ARRAY_LIST')
         
         return analyzer
     except Exception as exp:
@@ -132,11 +128,11 @@ def addRouteStop(analyzer, service, landingPointId):
     entry = m.get(analyzer['landingPoints'], landingPointId)
     if entry is None:
         lstroutes = lt.newList(cmpfunction=compareroutes)
-        lt.addLast(lstroutes, service['cable_id'])
+        lt.addLast(lstroutes, service['cable_name'])
         m.put(analyzer['landingPoints'], landingPointId, lstroutes)
     else:
         lstroutes = entry['value']
-        info = service['cable_id']
+        info = service['cable_name']
         if not lt.isPresent(lstroutes, info):
             lt.addLast(lstroutes, info)
     return analyzer
@@ -171,16 +167,26 @@ def addConnection(analyzer, origin, destination, distance):
     return analyzer
 
 def addLandingPoint(analyzer, landingPoint):
-    m.put(analyzer['landingPointsGeo'], landingPoint['landing_point_id'], landingPoint)
+    lt.addLast(analyzer['landingPointsGeo'], landingPoint)
+    #m.put(analyzer['landingPointsGeo'], landingPoint['landing_point_id'], landingPoint)
     return
 
 def addCountry(analyzer, country):
-    m.put(analyzer['countries'], country['CountryName'], country)
+    lt.addLast(analyzer['countries'], country)
+    #m.put(analyzer['countries'], country['CountryName'], country)
     return
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
+
+def getFirstLandingPoint(analyzer):
+    #lt.lastElement(m.valueSet(analyzer['landingPointsGeo']))
+    return lt.firstElement(analyzer['landingPointsGeo'])
+
+def getLastCountryInfo(analyzer):
+    #lt.lastElement(m.valueSet(analyzer['countries']))
+    return lt.lastElement(analyzer['countries'])
 
 def landingPointsSize(analyzer):
     """
@@ -219,7 +225,7 @@ def formatVertex(landingPoint, connection):
     seguido de la ruta.
     """
     name = landingPoint + '-'
-    name = name + connection['cable_id']
+    name = name + connection['cable_name']
     return name
 
 # Funciones de comparación

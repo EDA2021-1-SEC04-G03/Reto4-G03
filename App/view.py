@@ -59,16 +59,24 @@ while True:
         print("Cargando información de los archivos ....")
 
         cont = controller.init()
-        print("Numero de landing points cargados:",controller.landingPointsSize(cont))
+        print("\nNumero de landing points cargaados:",controller.landingPointsSize(cont))
+        print('Total de conexiones entre landing points:',controller.totalConnections(cont))
         print("Numero de paises cargados:",controller.countriesSize(cont))
-        print('Numero de vertices:',controller.totalStops(cont))
-        print('Numero de arcos:',controller.totalConnections(cont))
+        
+        firstLandingPoint=controller.getFirstLandingPoint(cont)
+        print("\nPrimer landing point cargado:")
+        print("-Landing point id:",firstLandingPoint['landing_point_id'])
+        print("-Nombre:",firstLandingPoint['name'])
+        print("-Latitud:",firstLandingPoint['latitude'])
+        print("-Longitud:",firstLandingPoint['longitude'])
 
-        """numedges = controller.totalConnections(cont)
-        numvertex = controller.totalStops(cont)
-        print('Numero de vertices: ' + str(numvertex))
-        print('Numero de arcos: ' + str(numedges))
-        print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))"""
+        lastLandingPoint=controller.getLastCountryInfo(cont)
+        print("\nÚltimo país cargado:")
+        print("-Pais:",lastLandingPoint['CountryName'])
+        print("-Población:",lastLandingPoint['Population'])
+        print("-Números de usuarios de internet:",lastLandingPoint['Internet users'],"\n")
+
+        #print('Numero de vertices:',controller.totalStops(cont))
 
     elif int(inputs[0]) == 2:
         pass
