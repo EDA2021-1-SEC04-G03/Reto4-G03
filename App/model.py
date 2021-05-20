@@ -32,6 +32,7 @@ from DISClib.ADT import list as lt
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Utils import error as error
+from math import radians, cos, sin, asin, sqrt
 assert cf
 
 """
@@ -102,8 +103,8 @@ def addStopConnection(analyzer, connection):
         addStop(analyzer, origin)
         addStop(analyzer, destination)
         addConnection(analyzer, origin, destination, distance)
-        addRouteStop(analyzer, connection, connection['\ufefforigin'])
-        addRouteStop(analyzer, connection, connection['destination'])
+        addRouteStop(analyzer, connection['cable_name'], connection['\ufefforigin'])
+        addRouteStop(analyzer, connection['cable_name'], connection['destination'])
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:addStopConnection')
@@ -121,18 +122,18 @@ def addStop(analyzer, landingpointid):
         error.reraise(exp, 'model:addstop')
 
 
-def addRouteStop(analyzer, service, landingPointId):
+def addRouteStop(analyzer, cable_name, landingPointId):
     """
     Agrega a una estacion, una ruta que es servida en ese paradero
     """
     entry = m.get(analyzer['landingPoints'], landingPointId)
     if entry is None:
         lstroutes = lt.newList(cmpfunction=compareroutes)
-        lt.addLast(lstroutes, service['cable_name'])
+        lt.addLast(lstroutes, cable_name)
         m.put(analyzer['landingPoints'], landingPointId, lstroutes)
     else:
         lstroutes = entry['value']
-        info = service['cable_name']
+        info = cable_name
         if not lt.isPresent(lstroutes, info):
             lt.addLast(lstroutes, info)
     return analyzer
@@ -155,7 +156,59 @@ def addRouteConnections(analyzer):
                 addConnection(analyzer, prevrout, route, 0.1)
                 addConnection(analyzer, route, prevrout, 0.1)
             prevrout = route
+    return
 
+def createGroundConnections(analyzer, origin, destination, originIndex, destIndex, distance, cable_name):
+    addStop(analyzer, destination)
+    addConnection(analyzer, origin, destination, distance)
+    addConnection(analyzer, destination, origin, distance)
+    addRouteStop(analyzer, cable_name, originIndex)
+    addRouteStop(analyzer, cable_name, destIndex)
+    return
+
+def addGroundConnections(analyzer):
+    """
+    Por cada vertice (cada estacion) se recorre la lista
+    de rutas servidas en dicha estación y se crean
+    arcos entre ellas para representar el cambio de ruta
+    que se puede realizar en una estación.
+    """
+    originIndex=20000
+    cableNamePreffix='Capital Connections '
+
+    for country in lt.iterator(analyzer['countries']):
+
+        cableName=cableNamePreffix + country['CountryName']
+        origin = str(originIndex) + '-' + cableName
+        addStop(analyzer, origin)
+        foundLpInCountry=False
+
+        #se crean conexiones desde el nuevo lp en la capital hasta todas las que haya en el pais
+        for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
+            if landingpoint['name'].split(', ')[-1]==country['CountryName']:
+                destination=landingpoint['landing_point_id']+'-'+cableName
+                distance=haversine(float(country['CapitalLatitude']),float(country['CapitalLongitude']),
+                    float(landingpoint['latitude']),float(landingpoint['longitude']))
+                createGroundConnections(analyzer, origin, destination, str(originIndex),
+                    landingpoint['landing_point_id'], distance, cableName)
+                foundLpInCountry=True
+        
+        #si no hay lp en el pais busca la más cercana y se crea conexión
+        if foundLpInCountry==False and country['CountryName']!='':
+            closestLp=None
+            minDistance=10000000
+            for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
+                distance=haversine(float(country['CapitalLatitude']),float(country['CapitalLongitude']),
+                    float(landingpoint['latitude']),float(landingpoint['longitude']))
+                if distance<minDistance:
+                    closestLp=landingpoint
+                    minDistance=distance
+            destination=closestLp['landing_point_id']+'-'+cableName
+            createGroundConnections(analyzer, origin, destination, str(originIndex),
+                    closestLp['landing_point_id'], minDistance, cableName)
+
+        originIndex+=1
+    return
 
 def addConnection(analyzer, origin, destination, distance):
     """
@@ -218,6 +271,22 @@ def totalConnections(analyzer):
 # Funciones de ordenamiento
 
 # Funciones helper
+
+def haversine(lat1,lon1, lat2,lon2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    r = 6371 # Radius of earth in kilometers. Use 3956 for miles
+    return c * r
 
 def formatVertex(landingPoint, connection):
     """

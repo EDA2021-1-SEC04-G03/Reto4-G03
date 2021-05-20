@@ -59,7 +59,7 @@ while True:
         print("Cargando información de los archivos ....")
 
         cont = controller.init()
-        print("\nNumero de landing points cargaados:",controller.landingPointsSize(cont))
+        print("\nNumero de landing points cargados:",controller.landingPointsSize(cont))
         print('Total de conexiones entre landing points:',controller.totalConnections(cont))
         print("Numero de paises cargados:",controller.countriesSize(cont))
         
