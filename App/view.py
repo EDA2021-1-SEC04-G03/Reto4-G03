@@ -90,32 +90,29 @@ while True:
             print("Los landing points están en el mismo clúster\n")
         else:
             print("Los landing points no comparten clúster\n")
-        
-
-        #haspath = controller.hasPath(cont, destStation)
-        #print('Hay camino entre la estación base : ' +
-        #    'y la estación: ' + destStation + ': ')
-        #print(haspath)
     
     elif int(inputs[0]) == 4:
         countryA = input("Nombre del pais A: ")
         countryB = input("Nombre del pais B: ")
 
         lps=controller.getCapitalLps(cont, countryA, countryB)
+        lps=('3036-2Africa','3066-Balalink')
+
         controller.minimumCostPaths(cont, lps[0])
         path = controller.minimumCostPath(cont, lps[1])
+
         if path is not None:
             pathlen = stack.size(path)
-            print('El camino es de longitud: ' + str(pathlen))
+            pesototal=0
+            print('El camino pasa por',str(pathlen),'rutas')
             while (not stack.isEmpty(path)):
                 stop = stack.pop(path)
+                pesototal+=stop['weight']
                 print(stop)
+            print('La distancia total de la ruta fue de aprox',round(pesototal,2),'km')
         else:
             print('No hay camino')
-
-        print(lps)
-
-
+        
     else:
         sys.exit(0)
 sys.exit(0)

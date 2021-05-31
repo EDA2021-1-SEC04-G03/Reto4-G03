@@ -183,7 +183,7 @@ def addGroundConnections(analyzer):
     que se puede realizar en una estación.
     """
     originIndex=20000
-    cableNamePreffix='Capital Connections '
+    cableNamePreffix='Ground Connections '
 
     for country in lt.iterator(analyzer['countries']):
 
