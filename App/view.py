@@ -96,7 +96,7 @@ while True:
         countryB = input("Nombre del pais B: ")
 
         lps=controller.getCapitalLps(cont, countryA, countryB)
-        lps=('3036-2Africa','3066-Balalink')
+        #lps=('3036-2Africa','3066-Balalink')
 
         controller.minimumCostPaths(cont, lps[0])
         path = controller.minimumCostPath(cont, lps[1])
