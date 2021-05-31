@@ -32,6 +32,8 @@ from DISClib.ADT import list as lt
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Utils import error as error
+from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dijsktra as djk
 from math import radians, cos, sin, asin, sqrt
 assert cf
 
@@ -58,6 +60,7 @@ def newAnalyzer():
                     'components': None,
                     'paths': None,
                     'landingPointsGeo': None,
+                    'landingPointsCapital': None,
                     'countries': None
                     }
 
@@ -71,6 +74,8 @@ def newAnalyzer():
                                               comparefunction=compareStopIds)
 
         analyzer['landingPointsGeo'] = lt.newList('ARRAY_LIST')
+
+        analyzer['landingPointsCapital'] = lt.newList('ARRAY_LIST')
         
         analyzer['countries'] = lt.newList('ARRAY_LIST')
         
@@ -166,6 +171,10 @@ def createGroundConnections(analyzer, origin, destination, originIndex, destInde
     addRouteStop(analyzer, cable_name, destIndex)
     return
 
+def addCapitalToList(analyzer, country, vertexname):
+    lt.addLast(analyzer['landingPointsCapital'], (country,vertexname))
+    return
+
 def addGroundConnections(analyzer):
     """
     Por cada vertice (cada estacion) se recorre la lista
@@ -181,6 +190,7 @@ def addGroundConnections(analyzer):
         cableName=cableNamePreffix + country['CountryName']
         origin = str(originIndex) + '-' + cableName
         addStop(analyzer, origin)
+        addCapitalToList(analyzer, country['CountryName'], origin)
         foundLpInCountry=False
 
         #se crean conexiones desde el nuevo lp en la capital hasta todas las que haya en el pais
@@ -229,9 +239,86 @@ def addCountry(analyzer, country):
     #m.put(analyzer['countries'], country['CountryName'], country)
     return
 
+def connectedComponents(analyzer):
+    """
+    Calcula los componentes conectados del grafo
+    Se utiliza el algoritmo de Kosaraju
+    """
+    analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
+    return scc.connectedComponents(analyzer['components'])
+
 # Funciones para creacion de datos
 
 # Funciones de consulta
+
+def minimumCostPaths(analyzer, initialStation):
+    """
+    Calcula los caminos de costo mínimo desde la estacion initialStation
+    a todos los demas vertices del grafo
+    """
+    analyzer['paths'] = djk.Dijkstra(analyzer['connections'], initialStation)
+    return analyzer
+
+def minimumCostPath(analyzer, destStation):
+    """
+    Retorna el camino de costo minimo entre la estacion de inicio
+    y la estacion destino
+    Se debe ejecutar primero la funcion minimumCostPaths
+    """
+    path = djk.pathTo(analyzer['paths'], destStation)
+    return path
+
+def areLpInSameCluster(analyzer, lp1, lp2):
+    foundLp1=False
+    foundLp2=False
+    lp1Id=''
+    lp2Id=''
+
+    for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
+            if not foundLp1 and landingpoint['name'].split(', ')[0]==lp1:
+                lp1Id=landingpoint['landing_point_id']
+                foundLp1=True
+                if foundLp2:
+                    break
+            elif not foundLp2 and landingpoint['name'].split(', ')[0]==lp2:
+                lp2Id=landingpoint['landing_point_id']
+                foundLp2=True
+                if foundLp1:
+                    break
+    
+    lp1List=m.get(analyzer['landingPoints'], lp1Id)['value']
+    lp2List=m.get(analyzer['landingPoints'], lp2Id)['value']
+
+    haveSameCluster=False
+
+    for route in lt.iterator(lp1List):
+        for route2 in lt.iterator(lp2List):
+            if route==route2:
+                print("Pasan por la misma ruta:",route)
+                haveSameCluster=True
+    
+    return haveSameCluster
+
+def getCapitalLps(analyzer, countryA, countryB):
+    capitalVertexA=''
+    capitalVertexB=''
+    
+    foundLp1=False
+    foundLp2=False
+    #0 country 1 vertex name
+    for country in lt.iterator(analyzer['landingPointsCapital']):
+        if not foundLp1 and country[0]==countryA:
+            capitalVertexA=country[1]
+            foundLp1=True
+            if foundLp2:
+                break
+        elif not foundLp2 and country[0]==countryB:
+            capitalVertexB=country[1]
+            foundLp2=True
+            if foundLp1:
+                break
+
+    return capitalVertexA, capitalVertexB
 
 def getFirstLandingPoint(analyzer):
     #lt.lastElement(m.valueSet(analyzer['landingPointsGeo']))

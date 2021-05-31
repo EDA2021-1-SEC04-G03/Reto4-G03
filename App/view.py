@@ -25,6 +25,7 @@ import sys
 import controller
 import model
 from DISClib.ADT import list as lt
+from DISClib.ADT import stack
 assert cf
 
 
@@ -79,7 +80,41 @@ while True:
         #print('Numero de vertices:',controller.totalStops(cont))
 
     elif int(inputs[0]) == 2:
-        pass
+
+        lp1 = input("Nombre del landing point 1: ")
+        lp2 = input("Nombre del landing point 2: ")
+
+        print('\nEl número de clusters en la red es de: '+ str(controller.connectedComponents(cont)))
+        result = controller.areLpInSameCluster(cont, lp1, lp2)
+        if result:
+            print("Los landing points están en el mismo clúster\n")
+        else:
+            print("Los landing points no comparten clúster\n")
+        
+
+        #haspath = controller.hasPath(cont, destStation)
+        #print('Hay camino entre la estación base : ' +
+        #    'y la estación: ' + destStation + ': ')
+        #print(haspath)
+    
+    elif int(inputs[0]) == 4:
+        countryA = input("Nombre del pais A: ")
+        countryB = input("Nombre del pais B: ")
+
+        lps=controller.getCapitalLps(cont, countryA, countryB)
+        controller.minimumCostPaths(cont, lps[0])
+        path = controller.minimumCostPath(cont, lps[1])
+        if path is not None:
+            pathlen = stack.size(path)
+            print('El camino es de longitud: ' + str(pathlen))
+            while (not stack.isEmpty(path)):
+                stop = stack.pop(path)
+                print(stop)
+        else:
+            print('No hay camino')
+
+        print(lps)
+
 
     else:
         sys.exit(0)

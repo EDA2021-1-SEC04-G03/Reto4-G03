@@ -91,6 +91,37 @@ def loadServices(analyzer, servicesfile):
 
 # Funciones de consulta sobre el catálogo
 
+def getCapitalLps(analyzer, countryA, countryB):
+    return model.getCapitalLps(analyzer, countryA, countryB)
+
+def minimumCostPaths(analyzer, initialStation):
+    """
+    Calcula todos los caminos de costo minimo de initialStation a todas
+    las otras estaciones del sistema
+    """
+    return model.minimumCostPaths(analyzer, initialStation)
+
+def minimumCostPath(analyzer, destStation):
+    """
+    Retorna el camino de costo minimo desde initialStation a destStation
+    """
+    return model.minimumCostPath(analyzer, destStation)
+
+def connectedComponents(analyzer):
+    """
+    Numero de componentes fuertemente conectados
+    """
+    return model.connectedComponents(analyzer)
+
+def areLpInSameCluster(analyzer, lp1, lp2):
+    return model.areLpInSameCluster(analyzer, lp1, lp2)
+
+def hasPath(analyzer, destStation):
+    """
+    Informa si existe un camino entre initialStation y destStation
+    """
+    return model.hasPath(analyzer, destStation)
+
 def getFirstLandingPoint(analyzer):
     return model.getFirstLandingPoint(analyzer)
 
