@@ -25,6 +25,7 @@ import sys
 import controller
 import model
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as m
 assert cf
 
 
@@ -79,6 +80,18 @@ while True:
         #print('Numero de vertices:',controller.totalStops(cont))
 
     elif int(inputs[0]) == 2:
+        pass
+
+    elif int(inputs[0]) == 3:
+        print('Calculando...')
+        result = controller.maxLandPoints(cont)
+        if(len(result[0]) > 1):
+            print('Los landing points con mas conexiones son:')
+        else:
+            print('El landing point con mas conexiones es:')
+        for i in result[0]:
+            print(m.get(cont['landingPoints'],i))
+
         pass
 
     else:
