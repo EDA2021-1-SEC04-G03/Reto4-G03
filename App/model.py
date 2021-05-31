@@ -353,6 +353,32 @@ def totalConnections(analyzer):
     """
     return gr.numEdges(analyzer['connections'])
 
+def maxLandPoints(analyzer):
+    landingPoints = analyzer['landingPoints']
+    keyList = m.keySet(landingPoints)
+    currentMax = 0
+    maxList = []
+
+    
+    for key in lt.iterator(keyList):
+        keySize = m.get(landingPoints,key)['value']['size']
+        if(currentMax > keySize):
+            continue
+        elif(currentMax < keySize):
+            currentMax = keySize
+            maxList = [key]
+        elif(currentMax == keySize):
+            maxList.append(key) 
+
+    results = (maxList,currentMax)
+    
+    return results
+
+
+    
+
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
