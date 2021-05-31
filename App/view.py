@@ -50,10 +50,13 @@ def printMenu():
     print("9- Graficando los Grafos")
 
 catalog = None
+sys.setrecursionlimit(2 ** 20)
 
 """
 Menu principal
 """
+
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
