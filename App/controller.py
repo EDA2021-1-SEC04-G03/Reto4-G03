@@ -150,3 +150,6 @@ def totalConnections(analyzer):
 
 def maxLandPoints(analyzer):
     return model.maxLandPoints(analyzer)
+
+def getCountriesInLp(analyzer, lp):
+    return model.getCountriesInLp(analyzer, lp)

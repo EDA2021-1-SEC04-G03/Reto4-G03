@@ -299,6 +299,29 @@ def areLpInSameCluster(analyzer, lp1, lp2):
     
     return haveSameCluster
 
+def getCountriesInLp(analyzer, lp):
+    lpId=None
+    for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
+            if landingpoint['name'].split(', ')[0]==lp:
+                lpId=landingpoint['landing_point_id']
+                break
+    
+    entry = m.get(analyzer['landingPoints'], lpId)
+    lstroutes = entry['value']
+    for route in lt.iterator(lstroutes):
+        vertex=lpId+'-'+route
+        outdegree=gr.outdegree(analyzer['connections'], vertex)
+        indegree=gr.indegree(analyzer['connections'], vertex)
+        adjacents=gr.adjacents(analyzer['connections'], vertex)
+        #print("Vertices adyacentes a:",vertex)
+        for vertexadj in lt.iterator(adjacents):
+            vertexid=vertexadj.split('-')[0]
+            #TODO falta buscar a qué país pertence cada ID en landingPointsGeo
+
+        #print("Desde",vertex,"salen",outdegree,'vertices')
+        #print("A",vertex,"entra",indegree,'vertices')
+    return
+
 def getCapitalLps(analyzer, countryA, countryB):
     capitalVertexA=''
     capitalVertexB=''
@@ -373,6 +396,8 @@ def maxLandPoints(analyzer):
     results = (maxList,currentMax)
     
     return results
+
+
 
 
     

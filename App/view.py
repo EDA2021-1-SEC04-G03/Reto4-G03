@@ -95,11 +95,22 @@ while True:
         else:
             print("Los landing points no comparten clúster\n")
     
+    elif int(inputs[0]) == 3:
+        print('Calculando...')
+        result = controller.maxLandPoints(cont)
+        if(len(result[0]) > 1):
+            print('Los landing points con mas conexiones son:')
+        else:
+            print('El landing point con mas conexiones es:')
+        for i in result[0]:
+            print(m.get(cont['landingPoints'],i))
+    
     elif int(inputs[0]) == 4:
         countryA = input("Nombre del pais A: ")
         countryB = input("Nombre del pais B: ")
 
         lps=controller.getCapitalLps(cont, countryA, countryB)
+        #TODO revisar orden de addRouteConnections y addGroundConnections, da que Colombia y Venezuela no están conectados, no es verdad
         #lps=('3036-2Africa','3066-Balalink')
 
         controller.minimumCostPaths(cont, lps[0])
@@ -116,18 +127,12 @@ while True:
             print('La distancia total de la ruta fue de aprox',round(pesototal,2),'km')
         else:
             print('No hay camino')
+    
+    elif int(inputs[0]) == 6:
         
-    elif int(inputs[0]) == 3:
+        lp = input("Nombre del landing point: ")
+        result = controller.getCountriesInLp(cont, lp)
         print('Calculando...')
-        result = controller.maxLandPoints(cont)
-        if(len(result[0]) > 1):
-            print('Los landing points con mas conexiones son:')
-        else:
-            print('El landing point con mas conexiones es:')
-        for i in result[0]:
-            print(m.get(cont['landingPoints'],i))
-
-        pass
 
     else:
         sys.exit(0)
