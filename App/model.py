@@ -302,9 +302,9 @@ def areLpInSameCluster(analyzer, lp1, lp2):
 def getCountriesInLp(analyzer, lp):
     lpId=None
     for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
-            if landingpoint['name'].split(', ')[0]==lp:
-                lpId=landingpoint['landing_point_id']
-                break
+        if landingpoint['name'].split(', ')[0]==lp:
+            lpId=landingpoint['landing_point_id']
+            break
     
     entry = m.get(analyzer['landingPoints'], lpId)
     lstroutes = entry['value']

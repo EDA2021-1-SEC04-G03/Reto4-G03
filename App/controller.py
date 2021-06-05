@@ -83,9 +83,8 @@ def loadServices(analyzer, servicesfile):
 
     for connection in input_file:
         model.addStopConnection(analyzer, connection)
-    model.addRouteConnections(analyzer)
     model.addGroundConnections(analyzer)
-
+    model.addRouteConnections(analyzer)
     return analyzer
 
 # Funciones de ordenamiento
