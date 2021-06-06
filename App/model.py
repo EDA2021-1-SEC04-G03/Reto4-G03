@@ -279,8 +279,6 @@ def connectedComponents(analyzer):
     analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
     return scc.connectedComponents(analyzer['components'])
 
-# Funciones para creacion de datos
-
 # Funciones de consulta
 
 def minimumCostPaths(analyzer, initialStation):
@@ -371,7 +369,7 @@ def getCapitalLps(analyzer, countryA, countryB):
     
     foundLp1=False
     foundLp2=False
-    #0 country 1 vertex name
+
     for country in lt.iterator(analyzer['landingPointsCapital']):
         if not foundLp1 and country[0]==countryA:
             capitalVertexA=country[1]
@@ -393,8 +391,6 @@ def minSpanTree(graph):
 
     for vert in lt.iterator(vertices):
         gr.insertVertex(mst,vert)
-
-
     
     keys = m.keySet(search['edgeTo'])
     totalWeight = 0
@@ -491,10 +487,6 @@ def maxLandPoints(analyzer):
     
     return results
 
-# Funciones utilizadas para comparar elementos dentro de una lista
-
-# Funciones de ordenamiento
-
 # Funciones helper
 
 def getIPCountry(ip):
@@ -581,7 +573,6 @@ def compareStopIds(stop, keyvaluestop):
         return 1
     else:
         return -1
-
 
 def compareroutes(route1, route2):
     """
