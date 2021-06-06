@@ -27,6 +27,7 @@ import model
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack
 from DISClib.ADT import map as m
+from DISClib.ADT.graph import gr
 assert cf
 
 
@@ -105,6 +106,8 @@ while True:
         for i in result[0]:
             print(m.get(cont['landingPoints'],i))
     
+
+    
     elif int(inputs[0]) == 4:
         countryA = input("Nombre del pais A: ")
         countryB = input("Nombre del pais B: ")
@@ -127,6 +130,15 @@ while True:
             print('La distancia total de la ruta fue de aprox',round(pesototal,2),'km')
         else:
             print('No hay camino')
+
+    elif int(inputs[0]) == 5:
+        print('Calculando')
+        result = controller.minSpanTree(cont['connections'])
+        print(result)
+
+
+
+
     
     elif int(inputs[0]) == 6:
         

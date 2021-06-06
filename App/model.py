@@ -25,8 +25,10 @@
  """
 
 
+from os import path
+from DISClib.ADT.indexminpq import contains
 import config as cf
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import containsVertex, gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import mapentry as me
@@ -34,6 +36,8 @@ from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim
+from DISClib.Algorithms.Graphs import bfs
 from math import radians, cos, sin, asin, sqrt
 assert cf
 
@@ -342,6 +346,57 @@ def getCapitalLps(analyzer, countryA, countryB):
                 break
 
     return capitalVertexA, capitalVertexB
+
+def minSpanTree(graph):
+    search = prim.PrimMST(graph)
+    vertices = gr.vertices(graph)
+    mst = gr.newGraph(datastructure='ADJ_LIST',directed=False,size=14000,comparefunction=compareStopIds)
+
+    for vert in lt.iterator(vertices):
+        gr.insertVertex(mst,vert)
+
+
+    
+    keys = m.keySet(search['edgeTo'])
+    totalWeight = 0
+    
+    for key in lt.iterator(keys):
+        edge = m.get(search['edgeTo'],key)
+        gr.addEdge(mst,edge['value']['vertexA'],edge['value']['vertexB'],edge['value']['weight'])
+        totalWeight += edge['value']['weight']
+
+    longest = longestPath(mst)
+    sizeMst = (gr.numVertices(mst))
+    results = (sizeMst,totalWeight,longest)
+
+        
+    return results
+
+def longestPath(graph):
+    #para encontrar ruta con el mayor numero de arcos
+    vtcs = gr.vertices(graph)
+    bfs1 = bfs.BreadhtFisrtSearch(graph,vtcs['first']['info'])
+    vtcs = m.keySet(bfs1['visited'])
+    maxDist = 0
+    maxVtc = None
+    for vtc in lt.iterator(vtcs):
+        pathDict = m.get(bfs1['visited'],vtc)
+        dist = pathDict['value']['distTo']
+        if(maxDist< dist):
+            maxDist = dist
+            maxVtc = vtc
+    
+    bfs2 = bfs.BreadhtFisrtSearch(graph,maxVtc)
+    maxDist = 0
+    maxVtc2 = None
+    for vtc in lt.iterator(vtcs):
+        pathDict = m.get(bfs2['visited'],vtc)
+        dist = pathDict['value']['distTo']
+        if(maxDist< dist):
+            maxDist = dist
+            maxVtc2 = vtc
+    return(maxVtc,maxVtc2,maxDist)
+
 
 def getFirstLandingPoint(analyzer):
     #lt.lastElement(m.valueSet(analyzer['landingPointsGeo']))
