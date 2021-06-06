@@ -87,6 +87,9 @@ def loadServices(analyzer, servicesfile):
     model.addRouteConnections(analyzer)
     return analyzer
 
+def getIPCountry(ip):
+    return model.getIPCountry(ip)
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

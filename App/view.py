@@ -29,7 +29,6 @@ from DISClib.ADT import stack
 from DISClib.ADT import map as m
 assert cf
 
-
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -126,6 +125,7 @@ while True:
             print('La distancia total de la ruta fue de aprox',round(pesototal,2),'km')
         else:
             print('No hay camino')
+        print()
     
     elif int(inputs[0]) == 6:
         
@@ -136,7 +136,39 @@ while True:
         for country in countriesAffected:
             print(country[0],"a",country[1],"km")
         print()
-    
+
+    elif int(inputs[0]) == 8:
+        ip1 = input("Dirección IP 1: ")
+        ip2 = input("Dirección IP 2: ")
+        #IP1:165.132.67.89 y la IP2: 8.8.8.8
+        countryA=None
+        countryB=None
+
+        print('Calculando...\n')
+
+        while countryA==None:
+            countryA=controller.getIPCountry(ip1)
+        while countryB==None:
+            countryB=controller.getIPCountry(ip2)
+
+        lps=controller.getCapitalLps(cont, countryA, countryB)
+
+        controller.minimumCostPaths(cont, lps[0])
+        path = controller.minimumCostPath(cont, lps[1])
+
+        if path is not None:
+            pathlen = stack.size(path)
+            print('El camino pasa por',str(pathlen),'rutas')
+            while (not stack.isEmpty(path)):
+                stop = stack.pop(path)
+                print(stop)
+        else:
+            print('No hay camino')
+        print()
+
+    elif int(inputs[0]) == 9:
+        pass
+
     else:
         sys.exit(0)
 sys.exit(0)

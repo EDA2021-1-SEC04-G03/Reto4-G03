@@ -24,7 +24,6 @@
  * Dario Correal - Version inicial
  """
 
-
 import config as cf
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -36,6 +35,9 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from math import radians, cos, sin, asin, sqrt
 assert cf
+import json
+import urllib.request
+import socket
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -424,6 +426,22 @@ def maxLandPoints(analyzer):
 # Funciones de ordenamiento
 
 # Funciones helper
+
+def getIPCountry(ip):
+    GEO_IP_API_URL = 'http://ip-api.com/json/'
+
+    # Creating request object to GeoLocation API
+    req = urllib.request.Request(GEO_IP_API_URL+ip)
+    # Getting in response JSON
+    try:
+        response = urllib.request.urlopen(req, timeout=2).read()
+    except socket.timeout as e:
+        return
+
+    # Loading JSON from text to object
+    json_response = json.loads(response.decode('utf-8'))
+
+    return json_response['country']
 
 def haversine(lat1,lon1, lat2,lon2):
     """
