@@ -38,6 +38,8 @@ assert cf
 import json
 import urllib.request
 import socket
+import folium
+import random
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -58,6 +60,7 @@ def newAnalyzer():
     try:
         analyzer = {
                     'landingPoints': None,
+                    'routeColors': None,
                     'connections': None,
                     'components': None,
                     'paths': None,
@@ -69,11 +72,17 @@ def newAnalyzer():
         analyzer['landingPoints'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareStopIds)
+        
+        analyzer['routeColors'] = m.newMap(numelements=1000,
+                                     maptype='PROBING',
+                                     comparefunction=compareStopIds)
 
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
+        
+        analyzer['connectionsList'] = lt.newList('ARRAY_LIST')
 
         analyzer['landingPointsGeo'] = lt.newList('ARRAY_LIST')
 
@@ -112,6 +121,7 @@ def addStopConnection(analyzer, connection):
         addConnection(analyzer, origin, destination, distance)
         addRouteStop(analyzer, connection['cable_name'], connection['\ufefforigin'])
         addRouteStop(analyzer, connection['cable_name'], connection['destination'])
+        addRouteColor(analyzer, connection['cable_name'])
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:addStopConnection')
@@ -145,6 +155,17 @@ def addRouteStop(analyzer, cable_name, landingPointId):
             lt.addLast(lstroutes, info)
     return analyzer
 
+def addRouteColor(analyzer, cable_name):
+    """
+    Agrega a una estacion, una ruta que es servida en ese paradero
+    """
+    entry = m.get(analyzer['routeColors'], cable_name)
+    if entry is None:
+        random_number = random.randint(0,16777215)
+        hex_number = str(hex(random_number))
+        hex_number ='#'+ hex_number[2:]
+        m.put(analyzer['routeColors'], cable_name, hex_number)
+    return analyzer
 
 def addRouteConnections(analyzer):
     """
@@ -236,6 +257,10 @@ def addLandingPoint(analyzer, landingPoint):
     #m.put(analyzer['landingPointsGeo'], landingPoint['landing_point_id'], landingPoint)
     return
 
+def addConnectionList(analyzer, connection):
+    lt.addLast(analyzer['connectionsList'], connection)
+    return
+
 def addCountry(analyzer, country):
     lt.addLast(analyzer['countries'], country)
     #m.put(analyzer['countries'], country['CountryName'], country)
@@ -317,13 +342,9 @@ def getCountriesInLp(analyzer, lp):
     lstroutes = entry['value']
     for route in lt.iterator(lstroutes):
         vertex=lpId+'-'+route
-        outdegree=gr.outdegree(analyzer['connections'], vertex)
-        indegree=gr.indegree(analyzer['connections'], vertex)
         adjacents=gr.adjacents(analyzer['connections'], vertex)
-        #print("Vertices adyacentes a:",vertex)
         for vertexadj in lt.iterator(adjacents):
             vertexid=vertexadj.split('-')[0]
-            #TODO falta buscar a qué país pertence cada ID en landingPointsGeo
             for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
                 if landingpoint['landing_point_id']==vertexid:
                     newcountry=landingpoint['name'].split(', ')[-1]
@@ -414,13 +435,6 @@ def maxLandPoints(analyzer):
     
     return results
 
-
-
-
-    
-
-
-
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
@@ -467,6 +481,40 @@ def formatVertex(landingPoint, connection):
     name = landingPoint + '-'
     name = name + connection['cable_name']
     return name
+
+def createMap(analyzer):
+    '''coordinates = [
+        [10.483333333333333,-66.866667],
+        [4.6,-74.083333]
+    ]'''
+    map = folium.Map()
+
+    for connection in lt.iterator(analyzer['connectionsList']):
+        originGeo=None
+        destGeo=None
+        
+        foundOrigin=False
+        foundDest=False
+
+        for lp in lt.iterator(analyzer['landingPointsGeo']):
+            if not foundOrigin and lp['landing_point_id']==connection['\ufefforigin']:
+                originGeo=[float(lp['latitude']),float(lp['longitude'])]
+                foundOrigin=True
+                if foundDest:
+                    break
+            elif not foundDest and lp['landing_point_id']==connection['destination']:
+                destGeo=[float(lp['latitude']),float(lp['longitude'])]
+                foundDest=True
+                if foundOrigin:
+                    break
+        if destGeo!=None:
+            coordinates = [originGeo, destGeo]
+            colorroute=m.get(analyzer['routeColors'], connection['cable_name'])['value']
+            line=folium.PolyLine(locations=coordinates, weight=1, color=colorroute, opacity=0.25)
+            map.add_child(line)
+    
+    map.save("map.html")
+    return
 
 # Funciones de comparación
 

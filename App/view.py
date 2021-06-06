@@ -80,8 +80,6 @@ while True:
         print("-Población:",lastLandingPoint['Population'])
         print("-Números de usuarios de internet:",lastLandingPoint['Internet users'],"\n")
 
-        #print('Numero de vertices:',controller.totalStops(cont))
-
     elif int(inputs[0]) == 2:
 
         lp1 = input("Nombre del landing point 1: ")
@@ -140,7 +138,8 @@ while True:
     elif int(inputs[0]) == 8:
         ip1 = input("Dirección IP 1: ")
         ip2 = input("Dirección IP 2: ")
-        #IP1:165.132.67.89 y la IP2: 8.8.8.8
+        #ip1='165.132.67.89'
+        #ip2='8.8.8.8'
         countryA=None
         countryB=None
 
@@ -167,7 +166,9 @@ while True:
         print()
 
     elif int(inputs[0]) == 9:
-        pass
+        print('Creando mapa..')
+        controller.createMap(cont)
+        print('\nMapa creado\n')
 
     else:
         sys.exit(0)

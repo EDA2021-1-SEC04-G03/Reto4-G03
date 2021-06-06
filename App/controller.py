@@ -83,12 +83,16 @@ def loadServices(analyzer, servicesfile):
 
     for connection in input_file:
         model.addStopConnection(analyzer, connection)
+        model.addConnectionList(analyzer, connection)
     model.addGroundConnections(analyzer)
     model.addRouteConnections(analyzer)
     return analyzer
 
 def getIPCountry(ip):
     return model.getIPCountry(ip)
+
+def createMap(analyzer):
+    return model.createMap(analyzer)
 
 # Funciones de ordenamiento
 
