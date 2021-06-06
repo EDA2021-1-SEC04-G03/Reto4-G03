@@ -40,14 +40,14 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Identificar los clústeres de comunicación")
-    print("3- Identificar los puntos de conexión críticos de la red")
-    print("4- La ruta de menor distancia")
-    print("5- Identificar la Infraestructura Crítica de la Red")
-    print("6- Análisis de fallas")
-    print("7- Los mejores canales para transmitir")
-    print("8- La mejor ruta para comunicarme")
-    print("9- Graficando los Grafos")
+    print("2- Req 1 Identificar los clústeres de comunicación")
+    print("3- Req 2 Identificar los puntos de conexión críticos de la red")
+    print("4- Req 3 La ruta de menor distancia")
+    print("5- Req 4 Identificar la Infraestructura Crítica de la Red")
+    print("6- Req 5 Análisis de fallas")
+    print("7- Req 6 Los mejores canales para transmitir")
+    print("8- Req 7 La mejor ruta para comunicarme")
+    print("9- Req 8 Graficando los Grafos")
 
 catalog = None
 sys.setrecursionlimit(2 ** 20)
@@ -103,14 +103,11 @@ while True:
         for i in result[0]:
             print(m.get(cont['landingPoints'],i))
     
-
-    
     elif int(inputs[0]) == 4:
         countryA = input("Nombre del pais A: ")
         countryB = input("Nombre del pais B: ")
 
         lps=controller.getCapitalLps(cont, countryA, countryB)
-        #lps=('3036-2Africa','3066-Balalink')
 
         controller.minimumCostPaths(cont, lps[0])
         path = controller.minimumCostPath(cont, lps[1])
@@ -132,12 +129,7 @@ while True:
         result = controller.minSpanTree(cont['connections'])
         print(result)
 
-
-
-
-    
     elif int(inputs[0]) == 6:
-        
         lp = input("Nombre del landing point: ")
         countriesAffected = controller.getCountriesInLp(cont, lp)
         print('Calculando...\n')
@@ -145,6 +137,9 @@ while True:
         for country in countriesAffected:
             print(country[0],"a",country[1],"km")
         print()
+
+    elif int(inputs[0]) == 7:
+        pass
 
     elif int(inputs[0]) == 8:
         ip1 = input("Dirección IP 1: ")

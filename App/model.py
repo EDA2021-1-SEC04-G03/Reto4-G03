@@ -539,10 +539,6 @@ def formatVertex(landingPoint, connection):
     return name
 
 def createMap(analyzer):
-    '''coordinates = [
-        [10.483333333333333,-66.866667],
-        [4.6,-74.083333]
-    ]'''
     map = folium.Map()
 
     for connection in lt.iterator(analyzer['connectionsList']):
