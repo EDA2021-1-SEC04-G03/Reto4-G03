@@ -560,6 +560,14 @@ def createMap(analyzer):
     map.save("map.html")
     return
 
+def landingPointName(cont,number):
+    for i in lt.iterator(cont['landingPointsGeo']):
+        if(number == i['landing_point_id']):
+            result = i['name']
+            break
+    return result
+
+
 # Funciones de comparación
 
 def compareStopIds(stop, keyvaluestop):

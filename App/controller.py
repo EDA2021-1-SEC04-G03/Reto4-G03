@@ -162,3 +162,6 @@ def getCountriesInLp(analyzer, lp):
 
 def minSpanTree(graph):
     return model.minSpanTree(graph)
+
+def landingPointName(cont,number):
+    return model.landingPointName(cont,number)

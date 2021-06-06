@@ -101,7 +101,8 @@ while True:
         else:
             print('El landing point con mas conexiones es:')
         for i in result[0]:
-            print(m.get(cont['landingPoints'],i))
+            values = m.get(cont['landingPoints'],i)
+            print('El landing point con mas conexiones fue',controller.landingPointName(cont,values['key']),'con',values['value']['size'],'conexiones.')
     
     elif int(inputs[0]) == 4:
         countryA = input("Nombre del pais A: ")
@@ -127,7 +128,7 @@ while True:
     elif int(inputs[0]) == 5:
         print('Calculando')
         result = controller.minSpanTree(cont['connections'])
-        print(result)
+        print('El MST tiene',result[0],'vertices, un peso total de',result[1],'y la rama mas larga es de',result[2][0],'a',result[2][1],'con',result[2][2],'nodos entre ellos.')
 
     elif int(inputs[0]) == 6:
         lp = input("Nombre del landing point: ")
