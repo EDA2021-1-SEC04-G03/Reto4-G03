@@ -159,3 +159,6 @@ def maxLandPoints(analyzer):
 
 def getCountriesInLp(analyzer, lp):
     return model.getCountriesInLp(analyzer, lp)
+
+def minSpanTree(graph):
+    return model.minSpanTree(graph)
