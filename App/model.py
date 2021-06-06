@@ -301,9 +301,14 @@ def areLpInSameCluster(analyzer, lp1, lp2):
 
 def getCountriesInLp(analyzer, lp):
     lpId=None
+    lpCountry=None
+    countries = []
+
     for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
-        if landingpoint['name'].split(', ')[0]==lp:
+        location=landingpoint['name'].split(', ')
+        if location[0]==lp:
             lpId=landingpoint['landing_point_id']
+            lpCountry=location[-1]
             break
     
     entry = m.get(analyzer['landingPoints'], lpId)
@@ -317,10 +322,20 @@ def getCountriesInLp(analyzer, lp):
         for vertexadj in lt.iterator(adjacents):
             vertexid=vertexadj.split('-')[0]
             #TODO falta buscar a qué país pertence cada ID en landingPointsGeo
-
-        #print("Desde",vertex,"salen",outdegree,'vertices')
-        #print("A",vertex,"entra",indegree,'vertices')
-    return
+            for landingpoint in lt.iterator(analyzer['landingPointsGeo']):
+                if landingpoint['landing_point_id']==vertexid:
+                    newcountry=landingpoint['name'].split(', ')[-1]
+                    found=False
+                    for country in countries:
+                        if country[0]==newcountry:
+                            found=True
+                            break
+                    if not found and newcountry!=lpCountry:
+                        distancia=gr.getEdge(analyzer['connections'],vertex,vertexadj)['weight']
+                        countries.append((newcountry,distancia))
+                    break
+    countries.sort(key=lambda x:x[1],reverse=True)
+    return countries
 
 def getCapitalLps(analyzer, countryA, countryB):
     capitalVertexA=''

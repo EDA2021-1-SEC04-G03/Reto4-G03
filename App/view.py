@@ -110,7 +110,6 @@ while True:
         countryB = input("Nombre del pais B: ")
 
         lps=controller.getCapitalLps(cont, countryA, countryB)
-        #TODO revisar orden de addRouteConnections y addGroundConnections, da que Colombia y Venezuela no están conectados, no es verdad
         #lps=('3036-2Africa','3066-Balalink')
 
         controller.minimumCostPaths(cont, lps[0])
@@ -131,9 +130,13 @@ while True:
     elif int(inputs[0]) == 6:
         
         lp = input("Nombre del landing point: ")
-        result = controller.getCountriesInLp(cont, lp)
-        print('Calculando...')
-
+        countriesAffected = controller.getCountriesInLp(cont, lp)
+        print('Calculando...\n')
+        print(len(countriesAffected),"paises son afectados por este landing point:")
+        for country in countriesAffected:
+            print(country[0],"a",country[1],"km")
+        print()
+    
     else:
         sys.exit(0)
 sys.exit(0)
